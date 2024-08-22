@@ -22,5 +22,8 @@
     "@solana/web3.js": "^1.95.2",
     "dotenv": "^16.4.5",
     "ethers": "^6.13.2"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
   }
 }
