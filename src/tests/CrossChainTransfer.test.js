@@ -7,57 +7,21 @@ describe('CrossChainTransfer', () => {
     crossChainTransfer = new CrossChainTransfer();
   });
 
-  describe('attestSolanaToEthereum', () => {
-    it('should attest and create wrapped tokens from Solana to Ethereum', async () => {
-      const payerAddress = 'solana-payer-address';
-      const mintAddress = 'solana-mint-address';
-
-      await expect(crossChainTransfer.attestSolanaToEthereum({ payerAddress, mintAddress })).resolves.not.toThrow();
-    });
-
-    it('should throw an error if attest and create wrapped tokens from Solana to Ethereum fails', async () => {
-      const payerAddress = 'solana-payer-address';
-      const mintAddress = 'solana-mint-address';
-
-      await expect(crossChainTransfer.attestSolanaToEthereum({ payerAddress, mintAddress })).rejects.toThrow();
-    });
-  });
-
-  describe('attestEthereumToSolana', () => {
-    it('should attest and create wrapped tokens from Ethereum to Solana', async () => {
-      const tokenAddress = 'ethereum-token-address';
-      const signer = 'ethereum-signer';
-
-      await expect(crossChainTransfer.attestEthereumToSolana({ tokenAddress, signer })).resolves.not.toThrow();
-    });
-
-    it('should throw an error if attest and create wrapped tokens from Ethereum to Solana fails', async () => {
-      const tokenAddress = 'ethereum-token-address';
-      const signer = 'ethereum-signer';
-
-      await expect(crossChainTransfer.attestEthereumToSolana({ tokenAddress, signer })).rejects.toThrow();
-    });
-  });
-
   describe('transferFromSolanaToEth', () => {
     it('should transfer tokens from Solana to Ethereum', async () => {
-      const payerAddress = 'solana-payer-address';
-      const fromAddress = 'solana-from-address';
-      const mintAddress = 'solana-mint-address';
+      const tokenAddress = 'solana-token-address';
       const amount = 100;
-      const targetAddress = 'ethereum-target-address';
+      const recipientAddress = 'ethereum-recipient-address';
 
-      await expect(crossChainTransfer.transferFromSolanaToEth({ payerAddress, fromAddress, mintAddress, amount, targetAddress })).resolves.not.toThrow();
+      await expect(crossChainTransfer.transferFromSolanaToEth({ tokenAddress, amount, recipientAddress })).resolves.not.toThrow();
     });
 
     it('should throw an error if transfer tokens from Solana to Ethereum fails', async () => {
-      const payerAddress = 'solana-payer-address';
-      const fromAddress = 'solana-from-address';
-      const mintAddress = 'solana-mint-address';
+      const tokenAddress = 'solana-token-address';
       const amount = 100;
-      const targetAddress = 'ethereum-target-address';
+      const recipientAddress = 'ethereum-recipient-address';
 
-      await expect(crossChainTransfer.transferFromSolanaToEth({ payerAddress, fromAddress, mintAddress, amount, targetAddress })).rejects.toThrow();
+      await expect(crossChainTransfer.transferFromSolanaToEth({ tokenAddress, amount, recipientAddress })).rejects.toThrow();
     });
   });
 
@@ -66,18 +30,16 @@ describe('CrossChainTransfer', () => {
       const tokenAddress = 'ethereum-token-address';
       const amount = 100;
       const recipientAddress = 'solana-recipient-address';
-      const signer = 'ethereum-signer';
 
-      await expect(crossChainTransfer.transferFromEthToSolana({ tokenAddress, amount, recipientAddress, signer })).resolves.not.toThrow();
+      await expect(crossChainTransfer.transferFromEthToSolana({ tokenAddress, amount, recipientAddress })).resolves.not.toThrow();
     });
 
     it('should throw an error if transfer tokens from Ethereum to Solana fails', async () => {
       const tokenAddress = 'ethereum-token-address';
       const amount = 100;
       const recipientAddress = 'solana-recipient-address';
-      const signer = 'ethereum-signer';
 
-      await expect(crossChainTransfer.transferFromEthToSolana({ tokenAddress, amount, recipientAddress, signer })).rejects.toThrow();
+      await expect(crossChainTransfer.transferFromEthToSolana({ tokenAddress, amount, recipientAddress })).rejects.toThrow();
     });
   });
 
