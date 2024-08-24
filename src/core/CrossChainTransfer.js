@@ -24,7 +24,7 @@ class CrossChainTransfer {
         this.solanaConnection = new Connection(this.solanaRpcUrl, 'confirmed');
     }
     
-        // logic for transferFromEthToSolana method
+    // logic for transferFromEthToSolana method
 
     async transferFromEthToSolana({ tokenAddress, amount, recipientAddress }) { 
 
@@ -68,17 +68,33 @@ class CrossChainTransfer {
         }
     }
 
+    // logic for transferFromSolanaToEth method
+
     async transferFromSolanaToEth({ tokenAddress, recipientAddress, amount }) {
         try {
             // Log the input addresses for debugging
             console.log('Token Address:', tokenAddress);
             console.log('Recipient Address:', recipientAddress);
     
+            // Validate the token address and recipient address
+            if (!tokenAddress || !recipientAddress) {
+                throw new Error('Token address and recipient address must be provided');
+            }
+    
+            // Validate the Solana public key format
+            if (!isValidBase58(tokenAddress)) {
+                throw new Error('Invalid base58 format for Solana token address');
+            }
+    
             const solanaPublicKey = new PublicKey(tokenAddress);
             const ethAddress = recipientAddress;
     
-            if (!PublicKey.isOnCurve(solanaPublicKey.toBuffer()) || !ethers.utils.isAddress(ethAddress)) {
-                throw new Error('Invalid address');
+            // Validate the Solana public key and Ethereum address
+            if (!PublicKey.isOnCurve(solanaPublicKey.toBuffer())) {
+                throw new Error('Invalid Solana public key');
+            }
+            if (!ethers.utils.isAddress(ethAddress)) {
+                throw new Error('Invalid Ethereum address');
             }
     
             // Create and sign the transaction on Solana
@@ -105,8 +121,16 @@ class CrossChainTransfer {
     
         } catch (error) {
             console.error('Error transferring from Solana to Ethereum:', error);
+            throw error; // Re-throw the error after logging it
         }
     }
+    
+    // Function to validate base58 strings
+    function isValidBase58(str) {
+        const base58Regex = /^[1-9A-HJ-NP-Za-km-z]+$/;
+        return base58Regex.test(str);
+    }
+    
 
     async redeemOnSolana(signedVAA, recipientAddress) { // Add the redeemOnSolana method
         const transaction = new Transaction();
