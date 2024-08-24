@@ -69,19 +69,20 @@ class CrossChainTransfer {
     }
 
     async transferFromSolanaToEth({ tokenAddress, recipientAddress, amount }) {
-
         try {
+            // Log the input addresses for debugging
+            console.log('Token Address:', tokenAddress);
+            console.log('Recipient Address:', recipientAddress);
+    
             const solanaPublicKey = new PublicKey(tokenAddress);
             const ethAddress = recipientAddress;
-            // Remove the declaration of tokenAmount
-
+    
             if (!PublicKey.isOnCurve(solanaPublicKey.toBuffer()) || !ethers.utils.isAddress(ethAddress)) {
                 throw new Error('Invalid address');
             }
-
+    
             // Create and sign the transaction on Solana
             const transaction = new Transaction().add(
-                
                 // Solana transfer instruction here
                 new TransactionInstruction({
                     keys: [{ pubkey: solanaPublicKey, isSigner: true, isWritable: true }],
@@ -89,15 +90,19 @@ class CrossChainTransfer {
                     data: Buffer.from([]) // Add your instruction data here
                 })
             );
-
+    
             const { blockhash } = await this.solanaConnection.getLatestBlockhash();
             transaction.recentBlockhash = blockhash;
             transaction.feePayer = solanaPublicKey;
-
-            // Remove the declaration of signers
-
-            return tx.hash;
-
+    
+            // Sign the transaction
+            const signedTransaction = await this.solanaConnection.signTransaction(transaction);
+    
+            // Send the transaction
+            const txHash = await this.solanaConnection.sendRawTransaction(signedTransaction.serialize());
+    
+            return txHash;
+    
         } catch (error) {
             console.error('Error transferring from Solana to Ethereum:', error);
         }
