@@ -70,7 +70,7 @@ class CrossChainTransfer {
 
     // logic for transferFromSolanaToEth method
 
-    async transferFromSolanaToEth({ tokenAddress, recipientAddress, amount }) {
+    async transferFromSolanaToEth({ tokenAddress, recipientAddress }) {
         try {
             // Log the input addresses for debugging
             console.log('Token Address:', tokenAddress);
@@ -112,7 +112,7 @@ class CrossChainTransfer {
             transaction.feePayer = solanaPublicKey;
     
             // Sign the transaction
-            const signedTransaction = await this.solanaConnection.signTransaction(transaction);
+            const signedTransaction = await this.solanaConnection.sendTransaction(transaction);
     
             // Send the transaction
             const txHash = await this.solanaConnection.sendRawTransaction(signedTransaction.serialize());
@@ -126,7 +126,8 @@ class CrossChainTransfer {
     }
     
     // Function to validate base58 strings
-    function isValidBase58(str) {
+    
+    isValidBase58(str) {
         const base58Regex = /^[1-9A-HJ-NP-Za-km-z]+$/;
         return base58Regex.test(str);
     }
@@ -137,7 +138,7 @@ class CrossChainTransfer {
         const redemptionInstruction = this.createRedemptionInstruction(signedVAA, recipientAddress);
         transaction.add(redemptionInstruction);
 
-        const signature = await this.solanaConnection.sendTransaction(transaction);
+        const signature = await this.solanaConnection.sendRawTransaction(transaction);
         await this.solanaConnection.confirmTransaction(signature, 'confirmedFinalized');
 
         return signature;
