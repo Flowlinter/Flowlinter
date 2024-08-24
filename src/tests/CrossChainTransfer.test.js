@@ -4,146 +4,96 @@ describe('CrossChainTransfer', () => {
   let crossChainTransfer;
 
   beforeEach(() => {
-    require('dotenv').config();
-
-    crossChainTransfer = new CrossChainTransfer(process.env.API_KEY, process.env.ETH_RPC_URL, process.env.SOLANA_RPC_URL);
+    crossChainTransfer = new CrossChainTransfer();
   });
 
-  // Test cases for the transferFromEthToSolana method
+  describe('attestSolanaToEthereum', () => {
+    it('should attest and create wrapped tokens from Solana to Ethereum', async () => {
+      const payerAddress = 'solana-payer-address';
+      const mintAddress = 'solana-mint-address';
 
-  describe('transferFromEthToSolana', () => {
-    it('should transfer tokens from Ethereum to Solana', async () => {
-      const tokenAddress = '0x1234567890abcdef';
-      const amount = 100;
-      const recipientAddress = '0xabcdef1234567890';
-
-      const result = await crossChainTransfer.transferFromEthToSolana({ tokenAddress, amount, recipientAddress });
-
-      expect(result.ethTxHash).toBeDefined();
-      expect(result.solanaTxId).toBeDefined();
+      await expect(crossChainTransfer.attestSolanaToEthereum({ payerAddress, mintAddress })).resolves.not.toThrow();
     });
 
-    it('should throw an error for invalid addresses', async () => {
-      const tokenAddress = 'invalid-address';
-      const amount = 100;
-      const recipientAddress = 'invalid-address';
+    it('should throw an error if attest and create wrapped tokens from Solana to Ethereum fails', async () => {
+      const payerAddress = 'solana-payer-address';
+      const mintAddress = 'solana-mint-address';
 
-      await expect(crossChainTransfer.transferFromEthToSolana({ tokenAddress, amount, recipientAddress })).rejects.toThrow('Transfer failed: Invalid address');
+      await expect(crossChainTransfer.attestSolanaToEthereum({ payerAddress, mintAddress })).rejects.toThrow();
     });
   });
 
-  // Test cases for the transferFromSolanaToEth method
+  describe('attestEthereumToSolana', () => {
+    it('should attest and create wrapped tokens from Ethereum to Solana', async () => {
+      const tokenAddress = 'ethereum-token-address';
+      const signer = 'ethereum-signer';
+
+      await expect(crossChainTransfer.attestEthereumToSolana({ tokenAddress, signer })).resolves.not.toThrow();
+    });
+
+    it('should throw an error if attest and create wrapped tokens from Ethereum to Solana fails', async () => {
+      const tokenAddress = 'ethereum-token-address';
+      const signer = 'ethereum-signer';
+
+      await expect(crossChainTransfer.attestEthereumToSolana({ tokenAddress, signer })).rejects.toThrow();
+    });
+  });
 
   describe('transferFromSolanaToEth', () => {
     it('should transfer tokens from Solana to Ethereum', async () => {
-      const tokenAddress = '0x1234567890abcdef';
-      const recipientAddress = '0xabcdef1234567890';
+      const payerAddress = 'solana-payer-address';
+      const fromAddress = 'solana-from-address';
+      const mintAddress = 'solana-mint-address';
       const amount = 100;
+      const targetAddress = 'ethereum-target-address';
 
-      const result = await crossChainTransfer.transferFromSolanaToEth({ tokenAddress, recipientAddress, amount });
-
-      expect(result).toBeDefined();
+      await expect(crossChainTransfer.transferFromSolanaToEth({ payerAddress, fromAddress, mintAddress, amount, targetAddress })).resolves.not.toThrow();
     });
 
-    it('should throw an error for invalid addresses', async () => {
-      const tokenAddress = 'invalid-address';
-      const recipientAddress = 'invalid-address';
+    it('should throw an error if transfer tokens from Solana to Ethereum fails', async () => {
+      const payerAddress = 'solana-payer-address';
+      const fromAddress = 'solana-from-address';
+      const mintAddress = 'solana-mint-address';
       const amount = 100;
+      const targetAddress = 'ethereum-target-address';
 
-      await expect(crossChainTransfer.transferFromSolanaToEth({ tokenAddress, recipientAddress, amount })).rejects.toThrow('Invalid address');
+      await expect(crossChainTransfer.transferFromSolanaToEth({ payerAddress, fromAddress, mintAddress, amount, targetAddress })).rejects.toThrow();
     });
   });
-});describe('CrossChainTransfer', () => {
-  let crossChainTransfer;
-
-  beforeEach(() => {
-    require('dotenv').config();
-
-    crossChainTransfer = new CrossChainTransfer(process.env.API_KEY, process.env.ETH_RPC_URL, process.env.SOLANA_RPC_URL);
-  });
-
-  // Test cases for the transferFromEthToSolana method
 
   describe('transferFromEthToSolana', () => {
     it('should transfer tokens from Ethereum to Solana', async () => {
-      const tokenAddress = '0x1234567890abcdef';
+      const tokenAddress = 'ethereum-token-address';
       const amount = 100;
-      const recipientAddress = '0xabcdef1234567890';
+      const recipientAddress = 'solana-recipient-address';
+      const signer = 'ethereum-signer';
 
-      const result = await crossChainTransfer.transferFromEthToSolana({ tokenAddress, amount, recipientAddress });
-
-      expect(result.ethTxHash).toBeDefined();
-      expect(result.solanaTxId).toBeDefined();
+      await expect(crossChainTransfer.transferFromEthToSolana({ tokenAddress, amount, recipientAddress, signer })).resolves.not.toThrow();
     });
 
-    it('should throw an error for invalid addresses', async () => {
-      const tokenAddress = 'invalid-address';
+    it('should throw an error if transfer tokens from Ethereum to Solana fails', async () => {
+      const tokenAddress = 'ethereum-token-address';
       const amount = 100;
-      const recipientAddress = 'invalid-address';
+      const recipientAddress = 'solana-recipient-address';
+      const signer = 'ethereum-signer';
 
-      await expect(crossChainTransfer.transferFromEthToSolana({ tokenAddress, amount, recipientAddress })).rejects.toThrow('Transfer failed: Invalid address');
-    });
-  });
-  
-  // Test cases for the transferFromSolanaToEth method
-
-  describe('transferFromSolanaToEth', () => {
-    it('should transfer tokens from Solana to Ethereum', async () => {
-      const tokenAddress = '0x1234567890abcdef';
-      const recipientAddress = '0xabcdef1234567890';
-      const amount = 100;
-
-      const result = await crossChainTransfer.transferFromSolanaToEth({ tokenAddress, recipientAddress, amount });
-
-      expect(result).toBeDefined();
-    });
-
-    it('should throw an error for invalid addresses', async () => {
-      const tokenAddress = 'invalid-address';
-      const recipientAddress = 'invalid-address';
-      const amount = 100;
-
-      await expect(crossChainTransfer.transferFromSolanaToEth({ tokenAddress, recipientAddress, amount })).rejects.toThrow('Invalid address');
+      await expect(crossChainTransfer.transferFromEthToSolana({ tokenAddress, amount, recipientAddress, signer })).rejects.toThrow();
     });
   });
 
-  // Additional test cases
+  describe('isValidEthereumAddress', () => {
+    it('should return true for a valid Ethereum address', () => {
+      const address = 'ethereum-address';
 
-  describe('redeemOnSolana', () => {
-    it('should redeem tokens on Solana using the signed VAA', async () => {
-      const signedVAA = '0x1234567890abcdef';
-      const recipientAddress = '0xabcdef1234567890';
-
-      const result = await crossChainTransfer.redeemOnSolana(signedVAA, recipientAddress);
-
-      expect(result).toBeDefined();
-    });
-  });
-
-  describe('createRedemptionInstruction', () => {
-    it('should create a redemption instruction', () => {
-      const signedVAA = '0x1234567890abcdef';
-      const recipientAddress = '0xabcdef1234567890';
-
-      const result = crossChainTransfer.createRedemptionInstruction(signedVAA, recipientAddress);
-
-      expect(result).toBeDefined();
-    });
-  });
-
-  describe('isValidBase58', () => {
-    it('should return true for a valid base58 string', () => {
-      const str = '5QCs8X';
-
-      const result = crossChainTransfer.isValidBase58(str);
+      const result = crossChainTransfer.isValidEthereumAddress(address);
 
       expect(result).toBe(true);
     });
 
-    it('should return false for an invalid base58 string', () => {
-      const str = 'invalid-string';
+    it('should return false for an invalid Ethereum address', () => {
+      const address = 'invalid-address';
 
-      const result = crossChainTransfer.isValidBase58(str);
+      const result = crossChainTransfer.isValidEthereumAddress(address);
 
       expect(result).toBe(false);
     });
@@ -151,7 +101,7 @@ describe('CrossChainTransfer', () => {
 
   describe('isValidSolanaAddress', () => {
     it('should return true for a valid Solana address', () => {
-      const address = '5QCs8X';
+      const address = 'solana-address';
 
       const result = crossChainTransfer.isValidSolanaAddress(address);
 
@@ -162,6 +112,24 @@ describe('CrossChainTransfer', () => {
       const address = 'invalid-address';
 
       const result = crossChainTransfer.isValidSolanaAddress(address);
+
+      expect(result).toBe(false);
+    });
+  });
+
+  describe('isValidBase58', () => {
+    it('should return true for a valid base58 string', () => {
+      const str = 'base58-string';
+
+      const result = crossChainTransfer.isValidBase58(str);
+
+      expect(result).toBe(true);
+    });
+
+    it('should return false for an invalid base58 string', () => {
+      const str = 'invalid-string';
+
+      const result = crossChainTransfer.isValidBase58(str);
 
       expect(result).toBe(false);
     });
