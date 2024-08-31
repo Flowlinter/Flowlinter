@@ -1,5 +1,5 @@
 {
-  "name": "flowlinter",
+  "name": "flowlinter-sdk",
   "version": "1.0.2",
   "description": "A developer SDK for integrating flowlinter`s cross-chain payment capabilities",
   "main": "index.js",
