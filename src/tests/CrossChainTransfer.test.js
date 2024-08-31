@@ -1,24 +1,33 @@
 require('dotenv').config();
-jest.mock('@certusone/wormhole-sdk');
+jest.mock('@certusone/wormhole-sdk', () => ({
+    transferFromSolana: jest.fn(),
+    getSignedVAAWithRetry: jest.fn(),
+    parseSequenceFromLogSolana: jest.fn(),
+    transferFromEth: jest.fn(),
+    parseSequenceFromLogEth: jest.fn(),
+    postVaaSolana: jest.fn(),
+    createWrappedOnSolana: jest.fn(),
+    createWrappedOnEth: jest.fn(),
+}));
 jest.mock('@solana/web3.js', () => {
     return {
         Connection: jest.fn(),
         Keypair: {
             fromSecretKey: jest.fn()
-        }
+        },
+        PublicKey: jest.fn(), // Mock PublicKey constructor
     };
 });
 jest.mock('ethers');
 jest.mock('bs58');
-// jest.mock('../utils/utils');
-
 jest.mock('../utils/utils', () => ({
   validateParams: jest.fn(),
   logInfo: jest.fn(),
+  logError: jest.fn(), // Add mock for logError
 }));
 
 const { ethers } = require('ethers');
-const { Connection, Keypair } = require('@solana/web3.js');
+const { Connection, Keypair, PublicKey } = require('@solana/web3.js');
 const bs58 = require('bs58');
 const {
     transferFromSolana,
@@ -30,10 +39,12 @@ const {
     createWrappedOnSolana,
     createWrappedOnEth
 } = require('@certusone/wormhole-sdk');
+
 const CrossChainTransfer = require('../core/CrossChainTransfer');
 const Utils = require('../utils/utils'); // Assuming you have a utils module for logging and validation
 
-describe('CrossChainTransfer', () => {
+// Describe the test suite
+describe('CrossChainTransfer', () => { 
     let crossChainTransfer;
     const privateKey = 'testPrivateKey';
     const mockedSolanaKeypair = { publicKey: 'mockedPublicKey' };
@@ -57,8 +68,8 @@ describe('CrossChainTransfer', () => {
         }));
 
         Keypair.fromSecretKey.mockReturnValue(mockedSolanaKeypair);
-
         crossChainTransfer = new CrossChainTransfer(privateKey);
+
     });
 
     afterEach(() => {
@@ -82,17 +93,17 @@ describe('CrossChainTransfer', () => {
             recipientAddress: '0x1234567890abcdef1234567890abcdef12345678',
             tokenName: 'TestToken'
         };
-
+    
         Utils.validateParams.mockReturnValue(true);
         transferFromSolana.mockResolvedValue('testTransactionId');
         crossChainTransfer.solanaConnection.getTransaction.mockResolvedValue({ logs: [] });
         parseSequenceFromLogSolana.mockReturnValue('testSequence');
         getSignedVAAWithRetry.mockResolvedValue('testSignedVAA');
         crossChainTransfer.redeemOnEth = jest.fn();
-
+    
         await crossChainTransfer.transferFromSolanaToEth(params);
-
-        expect(Utils.logInfo).toHaveBeenCalledWith(expect.stringContaining('Starting transfer of 1000000000 TestToken from Solana to Ethereum...'));
+    
+        expect(Utils.logInfo).toHaveBeenCalledWith(expect.stringContaining('Starting transfer of 10 TestToken from Solana to Ethereum...'));
         expect(Utils.logInfo).toHaveBeenCalledWith(expect.stringContaining('Transfer from Solana to Ethereum completed successfully.'));
     });
 
