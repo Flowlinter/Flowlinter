@@ -27,7 +27,7 @@ jest.mock('../utils/utils', () => ({
 }));
 
 const { ethers } = require('ethers');
-const { Connection, Keypair, PublicKey } = require('@solana/web3.js');
+const { Connection, Keypair } = require('@solana/web3.js');
 const bs58 = require('bs58');
 const {
     transferFromSolana,
@@ -49,6 +49,7 @@ describe('CrossChainTransfer', () => {
     const privateKey = 'testPrivateKey';
     const mockedSolanaKeypair = { publicKey: 'mockedPublicKey' };
 
+    // Mock the necessary functions and classes
     beforeEach(() => {
         Connection.mockImplementation(() => ({
             sendTransaction: jest.fn(),
@@ -72,10 +73,12 @@ describe('CrossChainTransfer', () => {
 
     });
 
+    // Clear mocks after each test
     afterEach(() => {
         jest.clearAllMocks();
     });
 
+    // Write your tests here
     test('should initialize Ethereum provider and signer', () => {
         expect(ethers.providers.JsonRpcProvider).toHaveBeenCalledWith(process.env.ETH_RPC_URL);
         expect(crossChainTransfer.ethSigner.privateKey).toEqual(privateKey);
@@ -94,15 +97,21 @@ describe('CrossChainTransfer', () => {
             tokenName: 'TestToken'
         };
     
+        // Mocking the necessary functions and their return values
         Utils.validateParams.mockReturnValue(true);
-        transferFromSolana.mockResolvedValue('testTransactionId');
-        crossChainTransfer.solanaConnection.getTransaction.mockResolvedValue({ logs: [] });
+        crossChainTransfer.solanaConnection.transferFromSolana = jest.fn().mockResolvedValue('testTransactionId');
+        crossChainTransfer.solanaConnection.getTransaction = jest.fn().mockResolvedValue({ logs: [] });
         parseSequenceFromLogSolana.mockReturnValue('testSequence');
         getSignedVAAWithRetry.mockResolvedValue('testSignedVAA');
-        crossChainTransfer.redeemOnEth = jest.fn();
+        crossChainTransfer.redeemOnEth = jest.fn().mockResolvedValue('redeemSuccess');
     
+        // Mocking logInfo to verify logging
+        Utils.logInfo = jest.fn();
+    
+        // Execute the transfer function
         await crossChainTransfer.transferFromSolanaToEth(params);
     
+        // Verify that the logs contain the expected messages
         expect(Utils.logInfo).toHaveBeenCalledWith(expect.stringContaining('Starting transfer of 10 TestToken from Solana to Ethereum...'));
         expect(Utils.logInfo).toHaveBeenCalledWith(expect.stringContaining('Transfer from Solana to Ethereum completed successfully.'));
     });

@@ -1,22 +1,33 @@
 {
-  "name": "flowlinter-core",
-  "version": "1.0.0",
-  "description": "",
+  "name": "flowlinter",
+  "version": "1.0.1",
+  "description": "A developer SDK for integrating flowlinter`s cross-chain payment capabilities",
   "main": "index.js",
   "scripts": {
     "test": "jest"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Flowlinter/Flowlinter-core.git"
+    "url": "git+https://github.com/Flowlinter/Flowlinter.git"
   },
-  "keywords": [],
+  "keywords": [
+    "blockchain",
+    "cross-chain",
+    "sdk",
+    "crypto",
+    "ethereum",
+    "solana",
+    "wormhole",
+    "decentralized",
+    "DeFi"
+  ],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Flowlinter/Flowlinter-core/issues"
+    "url": "https://github.com/Flowlinter/Flowlinter/issues"
   },
-  "homepage": "https://github.com/Flowlinter/Flowlinter-core#readme",
+  "homepage": "https://github.com/Flowlinter/Flowlinter#readme",
+  "private": false,
   "dependencies": {
     "@certusone/wormhole-sdk": "^0.10.18",
     "@solana/web3.js": "^1.95.3",

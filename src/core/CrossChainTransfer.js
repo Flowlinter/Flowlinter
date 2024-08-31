@@ -1,6 +1,7 @@
 const { ethers } = require('ethers');
 const { Connection, PublicKey, Transaction, Keypair } = require('@solana/web3.js');
 const bs58 = require('bs58');
+
 const {
     attestFromSolana,
     createWrappedOnEth,
@@ -20,6 +21,7 @@ const Utils = require('../utils/utils');
 require('dotenv').config();
 
 class CrossChainTransfer {
+    // Initialize the CrossChainTransfer class with the private key
     constructor(privateKey) {
         this.apiKey = process.env.API_KEY;
         this.ethRpcUrl = process.env.ETH_RPC_URL;
@@ -39,6 +41,7 @@ class CrossChainTransfer {
         this.solanaKeypair = Keypair.fromSecretKey(bs58.decode(this.privateKey));
     }
 
+    // Transfer from Solana to Ethereum
     async transferFromSolanaToEth({ tokenAddress, amount, recipientAddress, tokenName = 'Unknown Token' }) {
         Utils.validateParams({ tokenAddress, amount: BigInt(amount), recipientAddress }, 'solanaToEth', process.env);
     
@@ -71,16 +74,19 @@ class CrossChainTransfer {
             Utils.logInfo(`${tokenName} transfer from Solana to Ethereum completed successfully.`);
         } catch (error) {
             Utils.logError(`Error during ${tokenName} transfer from Solana to Ethereum:`, error);
+            console.error('Detailed error:', error); // Added detailed logging
             throw new Error('Transfer from Solana to Ethereum failed.');
         }
     }
 
+    // Transfer from Ethereum to Solana
     async transferFromEthToSolana({ tokenAddress, amount, recipientAddress, tokenName = 'Unknown Token' }) {
         Utils.validateParams({ tokenAddress, amount: BigInt(amount), recipientAddress }, 'ethToSolana', process.env);
 
         Utils.logInfo(`Starting transfer of ${amount} ${tokenName} from Ethereum to Solana...`);
 
         try {
+
             const tx = await this._withRetry(() => transferFromEth(
                 process.env.ETH_TOKEN_BRIDGE_ADDRESS,
                 this.ethSigner,
@@ -104,10 +110,12 @@ class CrossChainTransfer {
             Utils.logInfo(`${tokenName} transfer from Ethereum to Solana completed successfully.`);
         } catch (error) {
             Utils.logError(`Error during ${tokenName} transfer from Ethereum to Solana:`, error);
+            console.error('Detailed error:', error);
             throw new Error('Transfer from Ethereum to Solana failed.');
         }
     }
 
+    // Sign and send transaction on Solana
     async signAndSendTransaction(transaction) {
         try {
             transaction.feePayer = this.solanaKeypair.publicKey;
@@ -120,6 +128,7 @@ class CrossChainTransfer {
         }
     }
 
+    // Post and redeem VAA on Solana
     async postAndRedeemOnSolana(signedVAA, recipientAddress) {
         try {
             await this._withRetry(() => postVaaSolana(this.solanaConnection, process.env.SOL_BRIDGE_ADDRESS, signedVAA));
@@ -137,6 +146,7 @@ class CrossChainTransfer {
         }
     }
 
+    // Redeem VAA on Ethereum
     async redeemOnEth(signedVAA) {
         try {
             await this._withRetry(() => createWrappedOnEth(process.env.ETH_TOKEN_BRIDGE_ADDRESS, this.ethSigner, signedVAA));
@@ -165,6 +175,7 @@ class CrossChainTransfer {
         }
     }
 
+    // Get the private key securely
     _securePrivateKey() {
         // In production, integrate this with a secure vault
         return this.privateKey;
