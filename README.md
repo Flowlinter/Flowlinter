@@ -2,17 +2,17 @@
 
 # Overview
 
-The `flowlinter-sdk` is a powerful tool designed to facilitate cross-chain transfers between different blockchains using the Wormhole protocol. This SDK abstracts the complexities involved in transferring tokens and other digital assets across these two distinct blockchain ecosystems, providing a simplified and unified interface for developers.
+The `flowlinter-sdk` is a powerful tool designed to facilitate cross-chain transfers between different blockchains using the Wormhole protocol. This SDK abstracts the complexities involved in transferring tokens and other digital assets across different distinct blockchain ecosystems, providing a simplified and unified interface for developers.
 
-The flowlinter-sdk provides tools for cross-chain transfers between Ethereum and Solana using the Wormhole protocol. This SDK simplifies the process of transferring tokens and other assets between these two blockchains.
+With the help of this SDK, moving tokens and other assets between blockchains is made easier, and all of this asset management is done in one location.
 
 <!-- # Usage -->
 
 ### Key Features:
 
-- **Cross-Chain Transfers**: Seamlessly transfer tokens and assets between Ethereum and Solana.
-- **Token Management**: Easily manage and query token balances on both Ethereum and Solana.
-- **Transaction History**: Retrieve transaction histories for addresses on both blockchains.
+- **Cross-Chain Transfers**: Seamlessly transfer tokens and assets any supported chain.
+- **Token Management**: Easily manage and query token balances on any supported chain.
+- **Transaction History**: Retrieve transaction histories on any supported chain.
 - **Multi-Chain Support**: Access and manage balances across multiple blockchains through a single interface.
 
 ### Use Cases:
@@ -22,7 +22,7 @@ The flowlinter-sdk provides tools for cross-chain transfers between Ethereum and
 - **NFT Marketplaces**: Facilitate the transfer of NFTs across different blockchain networks.
 - **Cross-Chain Arbitrage**: Take advantage of price differences for tokens across Ethereum and Solana.
 
-By leveraging the `flowlinter-sdk`, developers can build robust applications that interact with both Ethereum and Solana blockchains, enhancing the interoperability and functionality of their decentralized applications (dApps).
+By leveraging the `flowlinter-sdk`, developers can build robust applications that interact with in diffrent blockchains, enhancing the interoperability and functionality of their decentralized applications (dApps).
 
 ## Installation
 
@@ -52,7 +52,9 @@ const transfer = new CrossChainTransfer(privateKey);
 
 ## Cross-Chain Transfers
 
-The `flowlinter-sdk` simplifies the process of transferring tokens and other assets between the between different blockchains. This is achieved through the Wormhole protocol, which acts as a bridge between the two networks. The SDK provides a straightforward method to initiate and manage these cross-chain transfers.
+The `flowlinter-sdk` simplifies the process of transferring tokens and other assets between the between different blockchains. This is achieved through the Wormhole protocol, which acts as a bridge between the two networks.
+
+The SDK provides a straightforward method to initiate and manage these cross-chain transfers.
 
 ### Example Usage
 
@@ -90,7 +92,9 @@ The **_flowlinter-sdk_** provides robust tools for managing and querying token b
 
 ### Example Usage
 
-To manage and query token balances, you can use the **_tokenManagement_** module provided by the SDK. Here’s a step-by-step example:
+To manage and query token balances, you can use the **_tokenManagement_** module provided by the SDK.
+
+Here’s a step-by-step example:
 
 ```javascript
 const { tokenManagement } = require("flowlinter-sdk");
